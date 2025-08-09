@@ -1,5 +1,19 @@
 const myLibrary = [];
 const table = document.querySelector("#allBooksTable");
+const tableBody = document.getElementById("tableBody");
+const addNewBookButton = document.querySelector("#addNewBookButton");
+const addNewBookDialog = document.querySelector("#addNewBookDialog");
+const closeBtn = document.querySelector("#closeBtn")
+
+// "Show the dialog" button opens the <dialog> modally
+addNewBookButton.addEventListener("click", () => {
+    addNewBookDialog.showModal();
+});
+
+closeBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+    addNewBookDialog.close();
+});
 
 function Book(title, author, pages, hasBeenRead) {
     this.id = crypto.randomUUID();
@@ -17,18 +31,12 @@ function addBookToLibrary(title, author, pages, hasBeenRead) {
 }
 
 function showAllBooks() {
+    var newTbody = document.createElement('tbody');
+    table.replaceChild(newTbody, table.childNodes[3]);
+    newTbody.setAttribute("id", "tableBody");
+
     myLibrary.forEach(element => {
         console.log(element);
-        // create a row in the table
-        // append a td element to the row
-        // populate each td textContent with the corresponding field of the element
-        // let row = document.createElement("tr")
-        //     .append(
-        //         document.createElement("td").append(element.id),
-        //         document.createElement("td").append(element.title), 
-        //         document.createElement("td").append(element.author), 
-        //         document.createElement("td").append(element.pages), 
-        //         document.createElement("td").append(element.hasBeenRead));
         let row = document.createElement("tr");
         let id = document.createElement("td");
         let title = document.createElement("td");
@@ -43,8 +51,24 @@ function showAllBooks() {
         hasBeenRead.append(element.hasBeenRead);
 
         row.append(id, title, author, pages, hasBeenRead)
-        table.appendChild(row);
+        newTbody.appendChild(row);
     });
+}
+
+function addNewBookForm() {
+    let titleValue = document.querySelector("#titleInput").value;
+    let authorValue = document.querySelector("#authorInput").value;
+    let pagesValue = document.querySelector("#pagesInput").value;
+    let hasBeenReadValue = document.querySelector("#hasBeenReadInput").value;
+
+    if (hasBeenReadValue == "on") {
+        hasBeenReadValue = true;
+    }
+
+    console.log(hasBeenReadValue);
+    addBookToLibrary(titleValue, authorValue, pagesValue, hasBeenReadValue);
+    addNewBookDialog.close();
+    showAllBooks();
 }
 
 addBookToLibrary('Harry Potter', 'J.K Rowlings', 350, true);

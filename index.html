@@ -7,15 +7,39 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <button id="addNewBookButton">New Book</button>
     <table id="allBooksTable">
-       <tr>
-        <th>ID</th>
-        <th>Title</th>
-        <th>Author</th>
-        <th>Pages</th>
-        <th>Read?</th>
-       </tr>
+        <thead>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Pages</th>
+            <th>Read?</th>
+        </thead>
+        <tbody id="tableBody"></tbody>
     </table>
+    <dialog id="addNewBookDialog" closedby="any">
+        <form>
+            <label>
+                Title:
+                <input type="text" name="title" id="titleInput">
+            </label>
+            <label>
+                Author:
+                <input type="text" name="author" id="authorInput">
+            </label>
+            <label>
+                Pages:
+                <input type="number" name="pages" id="pagesInput">
+            </label>
+            <label>
+                Read?:
+                <input type="checkbox" name="hasBeenRead" id="hasBeenReadInput">
+            </label>
+            <button onclick="addNewBookForm()" type="button">Add Book</button>
+        </form>
+        <button id="closeBtn" class="close">Close</button>
+    </dialog>
 </body>
 <script src="main.js"></script>
 </html>
