@@ -22,6 +22,14 @@ function Book(title, author, pages, hasBeenRead) {
     this.hasBeenRead = hasBeenRead;
 }
 
+Book.prototype.updateReadStatus = function() {
+    if(this.hasBeenRead == true) {
+        this.hasBeenRead = false;
+    } else {
+        this.hasBeenRead = true;
+    }
+};
+
 function addBookToLibrary(title, author, pages, hasBeenRead) {
     let book = new Book(title, author, pages, hasBeenRead);
 
@@ -35,6 +43,14 @@ function removeBookFromLibrary(id) {
             if (index > -1) {
                 myLibrary.splice(index, 1);
             }
+        }
+    })
+}
+
+function updateReadStatus(id) {
+    myLibrary.forEach(element => {
+        if (element.id == id) {
+            element.updateReadStatus();
         }
     })
 }
@@ -53,14 +69,21 @@ function showAllBooks() {
         let pages = document.createElement("td");
         let hasBeenRead = document.createElement("td");
         let removeBtn = document.createElement("button");
+        let updateReadStatusBtn = document.createElement("button");
 
         removeBtn.type = "button";
+        updateReadStatusBtn.type = "button";
 
         removeBtn.dataset.bookId = element.id
+        updateReadStatusBtn.dataset.bookId = element.id
 
         removeBtn.addEventListener("click", () => {
             removeBook(removeBtn.dataset.bookId);
         });
+
+        updateReadStatusBtn.addEventListener("click", () => {
+            updateBookReadStatus(updateReadStatusBtn.dataset.bookId)
+        })
 
         id.append(element.id);
         title.append(element.title);
@@ -68,8 +91,9 @@ function showAllBooks() {
         pages.append(element.pages);
         hasBeenRead.append(element.hasBeenRead);
         removeBtn.append("Remove");
+        updateReadStatusBtn.append("Change Read Status");
 
-        row.append(id, title, author, pages, hasBeenRead, removeBtn)
+        row.append(id, title, author, pages, hasBeenRead, removeBtn, updateReadStatusBtn);
         newTbody.appendChild(row);
     });
 }
@@ -92,6 +116,11 @@ function addNewBookForm() {
 
 function removeBook(id) {
     removeBookFromLibrary(id);
+    showAllBooks();
+}
+
+function updateBookReadStatus(id) {
+    updateReadStatus(id);
     showAllBooks();
 }
 
