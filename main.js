@@ -3,7 +3,25 @@ const table = document.querySelector("#allBooksTable");
 const tableBody = document.getElementById("tableBody");
 const addNewBookButton = document.querySelector("#addNewBookButton");
 const addNewBookDialog = document.querySelector("#addNewBookDialog");
-const closeBtn = document.querySelector("#closeBtn")
+const closeBtn = document.querySelector("#closeBtn");
+
+class Book {
+    constructor(title, author, pages, hasBeenRead) {
+        this.id = crypto.randomUUID();
+        this.title = title;
+        this.author = author;
+        this.pages = pages;
+        this.hasBeenRead = hasBeenRead;
+    }
+
+    updateReadStatus() {
+        if (this.hasBeenRead == true) {
+            this.hasBeenRead = false;
+        } else {
+            this.hasBeenRead = true;
+        }
+    }
+}
 
 addNewBookButton.addEventListener("click", () => {
     addNewBookDialog.showModal();
@@ -14,21 +32,21 @@ closeBtn.addEventListener("click", (event) => {
     addNewBookDialog.close();
 });
 
-function Book(title, author, pages, hasBeenRead) {
-    this.id = crypto.randomUUID();
-    this.title = title;
-    this.author = author;
-    this.pages = pages;
-    this.hasBeenRead = hasBeenRead;
-}
+// function Book(title, author, pages, hasBeenRead) {
+//     this.id = crypto.randomUUID();
+//     this.title = title;
+//     this.author = author;
+//     this.pages = pages;
+//     this.hasBeenRead = hasBeenRead;
+// }
 
-Book.prototype.updateReadStatus = function() {
-    if(this.hasBeenRead == true) {
-        this.hasBeenRead = false;
-    } else {
-        this.hasBeenRead = true;
-    }
-};
+// Book.prototype.updateReadStatus = function () {
+//     if (this.hasBeenRead == true) {
+//         this.hasBeenRead = false;
+//     } else {
+//         this.hasBeenRead = true;
+//     }
+// };
 
 function addBookToLibrary(title, author, pages, hasBeenRead) {
     let book = new Book(title, author, pages, hasBeenRead);
