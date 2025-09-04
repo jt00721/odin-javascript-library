@@ -3,7 +3,54 @@ const table = document.querySelector("#allBooksTable");
 const tableBody = document.getElementById("tableBody");
 const addNewBookButton = document.querySelector("#addNewBookButton");
 const addNewBookDialog = document.querySelector("#addNewBookDialog");
-const closeBtn = document.querySelector("#closeBtn")
+const closeBtn = document.querySelector("#closeBtn");
+const addBookBtn = document.querySelector("#addBookBtn");
+
+class Book {
+    constructor(title, author, pages, hasBeenRead) {
+        this.id = crypto.randomUUID();
+        this.title = title;
+        this.author = author;
+        this.pages = pages;
+        this.hasBeenRead = hasBeenRead;
+    }
+
+    updateReadStatus() {
+        if (this.hasBeenRead == true) {
+            this.hasBeenRead = false;
+        } else {
+            this.hasBeenRead = true;
+        }
+    }
+}
+
+class Library {
+    books = [];
+
+    addBookToLibrary(title, author, pages, hasBeenRead) {
+        let book = new Book(title, author, pages, hasBeenRead);
+        this.books.push(book);
+    }
+
+    removeBookFromLibrary(id) {
+        this.books.forEach(element => {
+            if (element.id == id) {
+                let index = this.books.indexOf(element);
+                if (index > -1) {
+                    this.books.splice(index, 1);
+                }
+            }
+        })
+    }
+
+    updateReadStatus(id) {
+        this.books.forEach(element => {
+            if (element.id == id) {
+                element.updateReadStatus();
+            }
+        })
+    }
+}
 
 addNewBookButton.addEventListener("click", () => {
     addNewBookDialog.showModal();
@@ -14,53 +61,12 @@ closeBtn.addEventListener("click", (event) => {
     addNewBookDialog.close();
 });
 
-function Book(title, author, pages, hasBeenRead) {
-    this.id = crypto.randomUUID();
-    this.title = title;
-    this.author = author;
-    this.pages = pages;
-    this.hasBeenRead = hasBeenRead;
-}
-
-Book.prototype.updateReadStatus = function() {
-    if(this.hasBeenRead == true) {
-        this.hasBeenRead = false;
-    } else {
-        this.hasBeenRead = true;
-    }
-};
-
-function addBookToLibrary(title, author, pages, hasBeenRead) {
-    let book = new Book(title, author, pages, hasBeenRead);
-
-    myLibrary.push(book);
-}
-
-function removeBookFromLibrary(id) {
-    myLibrary.forEach(element => {
-        if (element.id == id) {
-            let index = myLibrary.indexOf(element);
-            if (index > -1) {
-                myLibrary.splice(index, 1);
-            }
-        }
-    })
-}
-
-function updateReadStatus(id) {
-    myLibrary.forEach(element => {
-        if (element.id == id) {
-            element.updateReadStatus();
-        }
-    })
-}
-
-function showAllBooks() {
+function showAllBooks(library) {
     var newTbody = document.createElement('tbody');
     table.replaceChild(newTbody, table.childNodes[3]);
     newTbody.setAttribute("id", "tableBody");
 
-    myLibrary.forEach(element => {
+    library.books.forEach(element => {
         console.log(element);
         let row = document.createElement("tr");
         let id = document.createElement("td");
@@ -78,11 +84,11 @@ function showAllBooks() {
         updateReadStatusBtn.dataset.bookId = element.id
 
         removeBtn.addEventListener("click", () => {
-            removeBook(removeBtn.dataset.bookId);
+            removeBook(removeBtn.dataset.bookId, library);
         });
 
         updateReadStatusBtn.addEventListener("click", () => {
-            updateBookReadStatus(updateReadStatusBtn.dataset.bookId)
+            updateBookReadStatus(updateReadStatusBtn.dataset.bookId, library)
         })
 
         id.append(element.id);
@@ -98,7 +104,7 @@ function showAllBooks() {
     });
 }
 
-function addNewBookForm() {
+function addNewBookForm(library) {
     let titleValue = document.querySelector("#titleInput").value;
     let authorValue = document.querySelector("#authorInput").value;
     let pagesValue = document.querySelector("#pagesInput").value;
@@ -109,22 +115,26 @@ function addNewBookForm() {
     }
 
     console.log(hasBeenReadValue);
-    addBookToLibrary(titleValue, authorValue, pagesValue, hasBeenReadValue);
+    library.addBookToLibrary(titleValue, authorValue, pagesValue, hasBeenReadValue);
     addNewBookDialog.close();
-    showAllBooks();
+    showAllBooks(library);
 }
 
-function removeBook(id) {
-    removeBookFromLibrary(id);
-    showAllBooks();
+function removeBook(id, library) {
+    library.removeBookFromLibrary(id);
+    showAllBooks(library);
 }
 
-function updateBookReadStatus(id) {
-    updateReadStatus(id);
-    showAllBooks();
+function updateBookReadStatus(id, library) {
+    library.updateReadStatus(id);
+    showAllBooks(library);
 }
 
-addBookToLibrary('Harry Potter', 'J.K Rowlings', 350, true);
-addBookToLibrary('Ali', 'Faroo', 324, true);
-addBookToLibrary('Harry Potter', 'J.K Rowlings', 350, true);
-showAllBooks();
+let lib = new Library();
+lib.addBookToLibrary('Harry Potter', 'J.K Rowlings', 350, true);
+lib.addBookToLibrary('Ali', 'Faroo', 324, true);
+lib.addBookToLibrary('Harry Potter', 'J.K Rowlings', 350, true);
+showAllBooks(lib);
+addBookBtn.addEventListener("click", () => {
+    addNewBookForm(lib)
+})
